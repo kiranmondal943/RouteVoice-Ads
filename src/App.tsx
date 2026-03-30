@@ -1,9 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import DriverView from './pages/DriverView';
-// ... other imports ...
 import Campaigns from './pages/Campaigns';
 import Drivers from './pages/Drivers';
 import DriverOnboarding from './pages/DriverOnboarding';
@@ -15,12 +12,21 @@ import Payments from './pages/Payments';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import Login from './pages/Login';
+import DriverView from './pages/DriverView';
 import { AppProvider } from './store/AppContext';
+import React from 'react';
 
-// This is a "Guard" - it checks if you are logged in
+// THE GATEKEEPER: This checks if the user has the "isLoggedIn" key
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  return isLoggedIn ? <>{children}</> : <Navigate to="/login" />;
+  
+  if (!isLoggedIn) {
+    // If not logged in, force them to the login page
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
 };
 
 export default function App() {
@@ -28,10 +34,11 @@ export default function App() {
     <AppProvider>
       <Router>
         <Routes>
+          {/* Public Pages */}
           <Route path="/login" element={<Login />} />
           <Route path="/driver" element={<DriverView />} />
 
-          {/* All these routes are now PROTECTED by the login page */}
+          {/* Protected Pages (Locked by the Gatekeeper) */}
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
@@ -48,6 +55,7 @@ export default function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
 
+          {/* If the URL is wrong, go back to Login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
