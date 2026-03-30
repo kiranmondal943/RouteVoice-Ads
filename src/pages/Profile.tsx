@@ -21,15 +21,16 @@ export default function Profile() {
     setIsEditModalOpen(false);
   };
 
-  // Function to handle the actual logout logic
+  // UPDATED: Logic to clear the session and force a redirect to login
   const handleLogout = () => {
-    // 1. Clear any local data (Simulating a real logout)
+    console.log("Logging out...");
+    // 1. Clear everything from the browser memory
     localStorage.clear();
     sessionStorage.clear();
     
-    // 2. Redirect to the login page (or home)
-    // Change '/' to '/login' if you have created a login page
-    window.location.href = '/'; 
+    // 2. Force the browser to go to the login page
+    // Note: This matches the route we added in App.tsx
+    window.location.href = '/login'; 
   };
 
   return (
@@ -237,7 +238,7 @@ export default function Profile() {
               <p className="text-sm text-gray-500 mb-6">Are you sure you want to sign out of your account?</p>
               <div className="flex justify-center space-x-3">
                 <button onClick={() => setActiveModal(null)} className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">Cancel</button>
-                {/* I CHANGED THE LINE BELOW TO REDIRECT */}
+                {/* This button triggers the handleLogout function above */}
                 <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">Sign Out</button>
               </div>
             </div>
