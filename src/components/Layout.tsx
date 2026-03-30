@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
+import { Outlet, NavLink, useLocation, Link } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Megaphone, 
@@ -37,6 +37,9 @@ const navigation = [
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+
+  // Helper to format the page title in the top bar
+  const pageTitle = location.pathname.split('/').pop()?.replace('-', ' ') || 'Dashboard';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
@@ -100,7 +103,7 @@ export default function Layout() {
               <Menu className="w-6 h-6" />
             </button>
             <h1 className="ml-2 md:ml-0 text-lg font-semibold text-gray-900 capitalize">
-              {location.pathname.replace('/', '').replace('-', ' ')}
+              {pageTitle}
             </h1>
           </div>
           <div className="flex items-center space-x-4">
@@ -108,9 +111,15 @@ export default function Layout() {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
               <Bell className="w-6 h-6" />
             </button>
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm">
+            
+            {/* I UPDATED THE LINE BELOW: Profile Circle Icon is now a Link */}
+            <Link 
+              to="/profile" 
+              title="Go to Profile"
+              className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm hover:ring-2 hover:ring-blue-400 transition-all cursor-pointer"
+            >
               A
-            </div>
+            </Link>
           </div>
         </header>
 
