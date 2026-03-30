@@ -21,6 +21,17 @@ export default function Profile() {
     setIsEditModalOpen(false);
   };
 
+  // Function to handle the actual logout logic
+  const handleLogout = () => {
+    // 1. Clear any local data (Simulating a real logout)
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // 2. Redirect to the login page (or home)
+    // Change '/' to '/login' if you have created a login page
+    window.location.href = '/'; 
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -226,7 +237,8 @@ export default function Profile() {
               <p className="text-sm text-gray-500 mb-6">Are you sure you want to sign out of your account?</p>
               <div className="flex justify-center space-x-3">
                 <button onClick={() => setActiveModal(null)} className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">Cancel</button>
-                <button onClick={() => setActiveModal(null)} className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">Sign Out</button>
+                {/* I CHANGED THE LINE BELOW TO REDIRECT */}
+                <button onClick={handleLogout} className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">Sign Out</button>
               </div>
             </div>
           </div>
