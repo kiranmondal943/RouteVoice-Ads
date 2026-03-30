@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import DriverView from './pages/DriverView';
+// ... other imports ...
 import Campaigns from './pages/Campaigns';
 import Drivers from './pages/Drivers';
 import DriverOnboarding from './pages/DriverOnboarding';
@@ -12,22 +15,24 @@ import Payments from './pages/Payments';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
-import Login from './pages/Login'; // NEW: Imported the Login page
 import { AppProvider } from './store/AppContext';
+
+// This is a "Guard" - it checks if you are logged in
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  return isLoggedIn ? <>{children}</> : <Navigate to="/login" />;
+};
 
 export default function App() {
   return (
     <AppProvider>
       <Router>
         <Routes>
-          {/* 
-            NEW: Login Route 
-            We put this OUTSIDE the Layout route so it doesn't show the sidebar 
-          */}
           <Route path="/login" element={<Login />} />
+          <Route path="/driver" element={<DriverView />} />
 
-          {/* Main App Routes with Sidebar/Header Layout */}
-          <Route path="/" element={<Layout />}>
+          {/* All these routes are now PROTECTED by the login page */}
+          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="campaigns" element={<Campaigns />} />
@@ -43,8 +48,7 @@ export default function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
 
-          {/* Catch-all: Redirect any unknown URL to Login or Dashboard */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AppProvider>
