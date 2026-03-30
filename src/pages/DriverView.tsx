@@ -1,73 +1,126 @@
 import React, { useState } from 'react';
-import { Play, Search, MapPin } from 'lucide-react';
+import { Play, User, IndianRupee, Home, MapPin, Award } from 'lucide-react';
 
 export default function DriverView() {
+  const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'earnings'>('home');
   const [driverId, setDriverId] = useState('');
-  const [activeAd, setActiveAd] = useState<any>(null);
+  const [isFound, setIsFound] = useState(false);
 
-  const checkAd = () => {
-    // This is "Mock" data. Later, this will fetch from your Google Sheet/Supabase
-    if (driverId === "TO-101") {
-      setActiveAd({
-        client: "Fresh Mart Grocery",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        route: "Garia Station to Patuli"
-      });
-    } else {
-      alert("Driver ID not found. Try 'TO-101'");
-    }
+  // Mock Driver Data
+  const driverData = {
+    name: "Kiran Deb Mondal",
+    id: "TO-101",
+    totalEarnings: "₹4,250",
+    todayAds: 12,
+    rating: 4.8,
+    route: "Garia Station to Patuli C5"
   };
 
-  return (
-    <div className="min-h-screen bg-blue-600 p-6 flex flex-col items-center text-white font-sans">
-      <h1 className="text-2xl font-bold mb-8">RouteVoice Driver App</h1>
-      
-      {!activeAd ? (
-        <div className="w-full max-w-sm space-y-4 bg-white/10 p-6 rounded-2xl backdrop-blur-md">
-          <label className="block text-sm font-medium">Enter your Toto ID</label>
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder="e.g. TO-101"
-              className="w-full p-4 rounded-xl text-gray-900 outline-none"
-              value={driverId}
-              onChange={(e) => setDriverId(e.target.value)}
-            />
-          </div>
+  if (!isFound) {
+    return (
+      <div className="min-h-screen bg-blue-700 flex items-center justify-center p-6 text-white text-center">
+        <div className="max-w-sm w-full space-y-6">
+          <h1 className="text-3xl font-black italic">ROUTE VOICE</h1>
+          <p className="text-blue-100">Enter your Driver ID to start work</p>
+          <input 
+            className="w-full p-4 rounded-2xl text-gray-900 font-bold outline-none text-center" 
+            placeholder="TO-101"
+            onChange={(e) => setDriverId(e.target.value)}
+          />
           <button 
-            onClick={checkAd}
-            className="w-full py-4 bg-yellow-400 text-blue-900 font-bold rounded-xl flex items-center justify-center space-x-2"
+            onClick={() => driverId === "TO-101" ? setIsFound(true) : alert("Invalid ID")}
+            className="w-full py-4 bg-yellow-400 text-blue-900 font-black rounded-2xl uppercase tracking-widest shadow-xl"
           >
-            <Search size={20} />
-            <span>Check for Ads</span>
+            Start Shift
           </button>
         </div>
-      ) : (
-        <div className="w-full max-w-sm bg-white text-gray-900 rounded-3xl p-8 shadow-2xl space-y-6 text-center animate-bounce-in">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4">
-              <MapPin size={40} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-24 font-sans text-gray-900">
+      {/* Header */}
+      <div className="bg-blue-600 text-white p-6 rounded-b-[40px] shadow-lg">
+        <p className="text-blue-100 text-sm">Welcome back,</p>
+        <h1 className="text-2xl font-bold">{driverData.name}</h1>
+      </div>
+
+      <div className="p-6">
+        {/* TAB 1: HOME (AD PLAYER) */}
+        {activeTab === 'home' && (
+          <div className="space-y-6 text-center pt-8">
+            <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+              <div className="inline-block p-3 bg-green-100 text-green-600 rounded-full text-xs font-bold mb-4 uppercase">System Active</div>
+              <h2 className="text-2xl font-black mb-2 italic text-blue-600">Fresh Mart Ad</h2>
+              <p className="text-gray-500 mb-8 flex items-center justify-center"><MapPin size={16} className="mr-1" />{driverData.route}</p>
+              
+              <button 
+                onClick={() => alert("Audio playing...")}
+                className="w-32 h-32 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto shadow-2xl active:scale-95 transition-all"
+              >
+                <Play size={48} fill="currentColor" />
+              </button>
+              <p className="mt-6 text-blue-600 font-black animate-pulse">TAP TO PLAY AUDIO</p>
             </div>
-            <h2 className="text-xl font-bold">{activeAd.client}</h2>
-            <p className="text-gray-500 text-sm font-medium uppercase tracking-widest">{activeAd.route}</p>
           </div>
+        )}
 
-          <div className="pt-4">
-            <button 
-              onClick={() => {
-                const audio = new Audio(activeAd.audioUrl);
-                audio.play();
-              }}
-              className="w-28 h-28 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto shadow-xl hover:scale-105 active:scale-95 transition-all"
-            >
-              <Play size={48} fill="currentColor" />
-            </button>
-            <p className="mt-4 font-bold text-blue-600 animate-pulse text-lg">TAP TO PLAY AD</p>
+        {/* TAB 2: EARNINGS */}
+        {activeTab === 'earnings' && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold">Your Earnings</h2>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">Total Earned</p>
+                <p className="text-3xl font-black text-green-600">{driverData.totalEarnings}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center"><IndianRupee /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                <p className="text-gray-500 text-xs uppercase">Ads Played Today</p>
+                <p className="text-xl font-bold">{driverData.todayAds}</p>
+              </div>
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                <p className="text-gray-500 text-xs uppercase">Bonus Earned</p>
+                <p className="text-xl font-bold">₹150</p>
+              </div>
+            </div>
           </div>
+        )}
 
-          <button onClick={() => setActiveAd(null)} className="text-gray-400 text-sm underline pt-4">Switch Driver ID</button>
-        </div>
-      )}
+        {/* TAB 3: PROFILE */}
+        {activeTab === 'profile' && (
+          <div className="space-y-4">
+             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 text-center">
+                <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold">K</div>
+                <h3 className="font-bold text-xl">{driverData.name}</h3>
+                <p className="text-gray-500 text-sm">{driverData.id}</p>
+                <div className="mt-4 flex items-center justify-center text-yellow-500 space-x-1 font-bold">
+                  <Award size={18} /> <span>{driverData.rating} Star Driver</span>
+                </div>
+             </div>
+             <button onClick={() => setIsFound(false)} className="w-full p-4 text-red-600 font-bold">Sign Out Shift</button>
+          </div>
+        )}
+      </div>
+
+      {/* BOTTOM NAVIGATION */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-20 flex items-center justify-around px-6">
+        <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center ${activeTab === 'home' ? 'text-blue-600' : 'text-gray-400'}`}>
+          <Home size={24} />
+          <span className="text-[10px] mt-1 font-bold">HOME</span>
+        </button>
+        <button onClick={() => setActiveTab('earnings')} className={`flex flex-col items-center ${activeTab === 'earnings' ? 'text-blue-600' : 'text-gray-400'}`}>
+          <IndianRupee size={24} />
+          <span className="text-[10px] mt-1 font-bold">EARNINGS</span>
+        </button>
+        <button onClick={() => setActiveTab('profile')} className={`flex flex-col items-center ${activeTab === 'profile' ? 'text-blue-600' : 'text-gray-400'}`}>
+          <User size={24} />
+          <span className="text-[10px] mt-1 font-bold">PROFILE</span>
+        </button>
+      </nav>
     </div>
   );
 }
