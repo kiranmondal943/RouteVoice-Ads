@@ -12,6 +12,7 @@ import Payments from './pages/Payments';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import Login from './pages/Login'; // NEW: Imported the Login page
 import { AppProvider } from './store/AppContext';
 
 export default function App() {
@@ -19,6 +20,13 @@ export default function App() {
     <AppProvider>
       <Router>
         <Routes>
+          {/* 
+            NEW: Login Route 
+            We put this OUTSIDE the Layout route so it doesn't show the sidebar 
+          */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Main App Routes with Sidebar/Header Layout */}
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
@@ -34,6 +42,9 @@ export default function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
           </Route>
+
+          {/* Catch-all: Redirect any unknown URL to Login or Dashboard */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </Router>
     </AppProvider>
