@@ -22,14 +22,13 @@ export default function Profile() {
   };
 
   // UPDATED: Logic to clear the session and force a redirect to login
-  const handleLogout = () => {
-    console.log("Logging out...");
-    // 1. Clear everything from the browser memory
+ const handleLogout = () => {
+    // This is the most important line - it deletes the "Key"
+    localStorage.removeItem("isLoggedIn");
     localStorage.clear();
     sessionStorage.clear();
     
-    // 2. Force the browser to go to the login page
-    // Note: This matches the route we added in App.tsx
+    // Send the user to the login page immediately
     window.location.href = '/login'; 
   };
 
